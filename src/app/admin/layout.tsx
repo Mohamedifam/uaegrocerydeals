@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import styles from './admin.module.css';
-import { Store, ShoppingCart, Tag, LayoutDashboard } from 'lucide-react';
+import { Store, ShoppingCart, Tag, LayoutDashboard, FileText } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,6 +23,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/prices" className={styles.navLink}>
             <Tag size={20} />
             Prices & Deals
+          </Link>
+          <Link href="/admin/weekly-offers" className={styles.navLink}>
+            <FileText size={20} />
+            Weekly Offers
           </Link>
         </nav>
       </aside>

@@ -4,6 +4,7 @@ import styles from './page.module.css';
 
 export default function Home() {
   const [deals, setDeals] = useState<any[]>([]);
+  const [weeklyOffers, setWeeklyOffers] = useState<any[]>([]);
   const [stores, setStores] = useState<any[]>([]);
   const [selectedStore, setSelectedStore] = useState('');
   const [loading, setLoading] = useState(true);
@@ -13,8 +14,10 @@ export default function Home() {
       try {
         const resDeals = await fetch('/api/public/deals');
         const resStores = await fetch('/api/admin/stores');
+        const resOffers = await fetch('/api/public/weekly-offers');
         if (resDeals.ok) setDeals(await resDeals.json());
         if (resStores.ok) setStores(await resStores.json());
+        if (resOffers.ok) setWeeklyOffers(await resOffers.json());
       } catch (e) {
         console.error(e);
       } finally {
@@ -82,7 +85,73 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      {weeklyOffers.length > 0 && (
+        <section className={styles.section} style={{ paddingTop: '0' }}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Weekly Hot deals</h2>
+          </div>
+          <div className={styles.tableWrapper}>
+            <table className={styles.weeklyOffersTable}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left' }}>Vendor | Description | Location</th>
+                  <th>Deal Start</th>
+                  <th>Deal End</th>
+                  <th>Status</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                {weeklyOffers.map(offer => (
+                  <OfferTableRow key={offer.id} offer={offer} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
+  );
+}
+
+function OfferTableRow({ offer }: { offer: any }) {
+  const fromDate = new Date(offer.validFrom).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const toDate = new Date(offer.validTo).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  
+  // Mark as new if it was created recently (e.g., within the last 3 days)
+  const isNew = new Date(offer.createdAt) >= new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+
+  return (
+    <tr>
+      <td className={styles.vendorCell}>
+        <div className={styles.vendorLogoPlaceholder}>
+          {offer.store.name}
+        </div>
+        <div className={styles.vendorInfo}>
+          <div className={styles.vendorTitle}>{offer.title || offer.store.name}</div>
+          <div className={styles.vendorLocationBadge}>{offer.store.location}</div>
+        </div>
+      </td>
+      <td>{fromDate}</td>
+      <td>{toDate}</td>
+      <td>
+        <div className={styles.statusCell}>
+          <span className={styles.statusValid}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '4px' }}>
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Valid
+          </span>
+          {isNew && <span className={styles.statusNew}>New</span>}
+        </div>
+      </td>
+      <td>
+        <a href={offer.pdfUrl} target="_blank" rel="noreferrer" className={styles.viewButton}>
+          View
+        </a>
+      </td>
+    </tr>
   );
 }
 

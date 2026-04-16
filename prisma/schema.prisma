@@ -14,6 +14,7 @@ model Store {
   logo      String?
   active    Boolean  @default(true)
   prices    Price[]
+  weeklyOffers WeeklyOffer[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -41,4 +42,16 @@ model Price {
   store      Store    @relation(fields: [storeId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model WeeklyOffer {
+  id        String   @id @default(uuid())
+  title     String? 
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id])
+  validFrom DateTime
+  validTo   DateTime
+  pdfUrl    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

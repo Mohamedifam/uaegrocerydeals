@@ -75,7 +75,6 @@
 .card {
   background: white;
   border-radius: 1.25rem;
-  overflow: hidden;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid #f1f5f9;
@@ -92,7 +91,7 @@
 .bestDealBadge {
   position: absolute;
   top: 1.25rem;
-  right: 1.25rem;
+  right: -0.5rem;
   background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
   color: white;
   padding: 0.35rem 1rem;
@@ -158,6 +157,122 @@
   font-weight: 800;
   color: #0ea5e9;
   line-height: 1;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  background: transparent;
+  padding: 0 0 1rem 0;
+}
+
+.weeklyOffersTable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.weeklyOffersTable thead {
+  background-color: #0db5d6; /* Teal border top/header */
+}
+
+.weeklyOffersTable th {
+  padding: 1rem 1.5rem;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 2px solid #0a95b1;
+}
+
+.weeklyOffersTable td {
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+}
+
+.vendorCell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left !important;
+}
+
+.vendorLogoPlaceholder {
+  width: 100px;
+  height: 44px;
+  background-color: white;
+  color: #16a34a;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.1rem;
+  font-style: italic;
+}
+
+.vendorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.vendorTitle {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: white;
+}
+
+.vendorLocationBadge {
+  background-color: #12cc20;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  display: inline-block;
+  align-self: flex-start;
+}
+
+.statusCell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.statusValid {
+  color: #12cc20;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.statusNew {
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.viewButton {
+  background-color: #0dadd1;
+  color: white;
+  padding: 0.6rem 2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+
+.viewButton:hover {
+  opacity: 0.9;
 }
 
 .pdfButton {
