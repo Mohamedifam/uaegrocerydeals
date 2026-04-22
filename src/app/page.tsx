@@ -32,7 +32,7 @@ export default function Home() {
     return deals.filter(d => d.storeId === selectedStore);
   }, [deals, selectedStore]);
 
-  const bestOffers = deals.filter(d => d.isBestDeal).slice(0, 3);
+  const bestOffers = deals.filter(d => d.isBestDeal && d.product); // Ensure product exists
 
   return (
     <div>
@@ -44,15 +44,31 @@ export default function Home() {
         </p>
       </section>
 
+      <section className={styles.adSection}>
+        <div className={styles.adBanner}>
+          <span className={styles.adText}>Publish your Ad here</span>
+        </div>
+      </section>
+
       {!loading && bestOffers.length > 0 && (
         <section className={styles.section} style={{ paddingBottom: '0' }}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>🏆 Top Highlighted Deals</h2>
+            <h2 className={styles.sectionTitle}>🏆 Weekly Top Pick Deals</h2>
           </div>
-          <div className={styles.grid}>
-            {bestOffers.map(deal => (
-              <DealCard key={deal.id} deal={deal} highlight={true} />
-            ))}
+          <div className={styles.marqueeWrapper}>
+            <div className={styles.marqueeContent}>
+              {bestOffers.map(deal => (
+                <DealCard key={deal.id} deal={deal} highlight={true} />
+              ))}
+              {/* Duplicate items for seamless loop */}
+              {bestOffers.map(deal => (
+                <DealCard key={`${deal.id}-dup`} deal={deal} highlight={true} />
+              ))}
+              {/* Third set to ensure it fills widescreen */}
+              {bestOffers.map(deal => (
+                <DealCard key={`${deal.id}-dup2`} deal={deal} highlight={true} />
+              ))}
+            </div>
           </div>
         </section>
       )}

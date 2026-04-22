@@ -32,44 +32,139 @@ a {
 }
 
 .glass-header {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,255,255,0.3);
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
-  z-index: 50;
-  padding: 1rem 0;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+.nav-content-top {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 2rem;
+  padding: 0.75rem 1.5rem;
 }
 
-.nav-content {
+.brand-area {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
 .brand {
   font-size: 1.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #1a4f9c; /* Carrefour blue vibe */
+  letter-spacing: -0.02em;
+}
+
+.location-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.location-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.location-time {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #1e293b;
+  color: white;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  width: max-content;
+}
+
+.location-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.search-bar {
+  display: flex;
+  flex: 1;
+  max-width: 600px;
+  position: relative;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.search-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.auth-links {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.cart-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #1a4f9c;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+.nav-content-bottom {
+  border-top: 1px solid #f1f5f9;
+  padding: 0.5rem 1.5rem;
 }
 
 .nav-links {
   display: flex;
-  gap: 1.5rem;
-  font-weight: 500;
-  color: var(--text-dark);
+  gap: 2rem;
+  overflow-x: auto;
 }
 
-.nav-links a:hover {
-  color: var(--primary);
+.nav-links a {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+  padding: 0.5rem 0;
+}
+
+.nav-links a.active {
+  color: #1a4f9c;
+  border-bottom: 2px solid #1a4f9c;
 }
