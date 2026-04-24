@@ -8,16 +8,28 @@ export default function Home() {
   const [stores, setStores] = useState<any[]>([]);
   const [selectedStore, setSelectedStore] = useState('');
   const [loading, setLoading] = useState(true);
+  const [siteSettings, setSiteSettings] = useState<any>({});
+  const [activeAds, setActiveAds] = useState<any[]>([]);
+  const [tableFilter, setTableFilter] = useState({ store: '', location: '' });
 
   useEffect(() => {
     async function load() {
       try {
-        const resDeals = await fetch('/api/public/deals');
-        const resStores = await fetch('/api/admin/stores');
-        const resOffers = await fetch('/api/public/weekly-offers');
+        const [resDeals, resStores, resOffers, resSettings] = await Promise.all([
+          fetch('/api/public/deals'),
+          fetch('/api/admin/stores'),
+          fetch('/api/public/weekly-offers'),
+          fetch('/api/public/settings')
+        ]);
+        
         if (resDeals.ok) setDeals(await resDeals.json());
         if (resStores.ok) setStores(await resStores.json());
         if (resOffers.ok) setWeeklyOffers(await resOffers.json());
+        if (resSettings.ok) {
+          const data = await resSettings.json();
+          setSiteSettings(data.settings);
+          setActiveAds(data.ads);
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -32,7 +44,18 @@ export default function Home() {
     return deals.filter(d => d.storeId === selectedStore);
   }, [deals, selectedStore]);
 
-  const bestOffers = deals.filter(d => d.isBestDeal && d.product); // Ensure product exists
+  const filteredWeeklyOffers = useMemo(() => {
+    return weeklyOffers.filter(offer => {
+      const matchStore = !tableFilter.store || offer.storeId === tableFilter.store;
+      const matchLocation = !tableFilter.location || offer.store.location.toLowerCase().includes(tableFilter.location.toLowerCase());
+      return matchStore && matchLocation;
+    });
+  }, [weeklyOffers, tableFilter]);
+
+  const bestOffers = deals.filter(d => d.isBestDeal && d.product);
+
+  const showTopPicks = siteSettings.showWeeklyTopPicks !== 'false';
+  const showAllDeals = siteSettings.showAllWeeklyDeals !== 'false';
 
   return (
     <div>
@@ -46,11 +69,21 @@ export default function Home() {
 
       <section className={styles.adSection}>
         <div className={styles.adBanner}>
-          <span className={styles.adText}>Publish your Ad here</span>
+          {activeAds.length > 0 ? (
+            <div className={styles.adScroller}>
+              {activeAds.map(ad => (
+                <a key={ad.id} href={ad.linkUrl || '#'} target="_blank" rel="noreferrer" className={styles.adSlide}>
+                  <img src={ad.imageUrl} alt={ad.title || 'Advertisement'} />
+                </a>
+              ))}
+            </div>
+          ) : (
+            <span className={styles.adText}>Publish your Ad here</span>
+          )}
         </div>
       </section>
 
-      {!loading && bestOffers.length > 0 && (
+      {!loading && showTopPicks && bestOffers.length > 0 && (
         <section className={styles.section} style={{ paddingBottom: '0' }}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>🏆 Weekly Top Pick Deals</h2>
@@ -60,52 +93,68 @@ export default function Home() {
               {bestOffers.map(deal => (
                 <DealCard key={deal.id} deal={deal} highlight={true} />
               ))}
-              {/* Duplicate items for seamless loop */}
-              {bestOffers.map(deal => (
-                <DealCard key={`${deal.id}-dup`} deal={deal} highlight={true} />
-              ))}
-              {/* Third set to ensure it fills widescreen */}
-              {bestOffers.map(deal => (
-                <DealCard key={`${deal.id}-dup2`} deal={deal} highlight={true} />
+              {bestOffers.concat(bestOffers).map((deal, i) => (
+                <DealCard key={`${deal.id}-dup-${i}`} deal={deal} highlight={true} />
               ))}
             </div>
           </div>
         </section>
       )}
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>📅 All Weekly Deals</h2>
-          <div className={styles.filterBar}>
-            <select className={styles.filterSelect} value={selectedStore} onChange={e => setSelectedStore(e.target.value)}>
-              <option value="">All Stores</option>
-              {stores.map(store => (
-                <option key={store.id} value={store.id}>{store.name}</option>
+      {showAllDeals && (
+        <section className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>📅 All Weekly Deals</h2>
+            <div className={styles.filterBar}>
+              <select className={styles.filterSelect} value={selectedStore} onChange={e => setSelectedStore(e.target.value)}>
+                <option value="">All Stores</option>
+                {stores.map(store => (
+                  <option key={store.id} value={store.id}>{store.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          {loading ? (
+            <p style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>Loading latest deals...</p>
+          ) : filteredDeals.length > 0 ? (
+            <div className={styles.grid}>
+              {filteredDeals.map(deal => (
+                <DealCard key={deal.id} deal={deal} highlight={false} />
               ))}
-            </select>
-          </div>
-        </div>
-        
-        {loading ? (
-          <p style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>Loading latest deals...</p>
-        ) : filteredDeals.length > 0 ? (
-          <div className={styles.grid}>
-            {filteredDeals.map(deal => (
-              <DealCard key={deal.id} deal={deal} highlight={false} />
-            ))}
-          </div>
-        ) : (
-          <div style={{ textAlign: 'center', padding: '4rem', background: '#f8fafc', borderRadius: '1rem' }}>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#0f172a' }}>No active deals found!</h3>
-            <p style={{ color: '#64748b' }}>Check back later or try clearing the filters.</p>
-          </div>
-        )}
-      </section>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '4rem', background: '#f8fafc', borderRadius: '1rem' }}>
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#0f172a' }}>No active deals found!</h3>
+              <p style={{ color: '#64748b' }}>Check back later or try clearing the filters.</p>
+            </div>
+          )}
+        </section>
+      )}
 
       {weeklyOffers.length > 0 && (
-        <section className={styles.section} style={{ paddingTop: '0' }}>
+        <section className={styles.section} style={{ paddingTop: showAllDeals ? '0' : '4rem' }}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Weekly Hot deals</h2>
+            <div className={styles.filterBar}>
+              <select 
+                className={styles.filterSelect} 
+                value={tableFilter.store} 
+                onChange={e => setTableFilter(prev => ({ ...prev, store: e.target.value }))}
+              >
+                <option value="">All Supermarkets</option>
+                {stores.map(store => (
+                  <option key={store.id} value={store.id}>{store.name}</option>
+                ))}
+              </select>
+              <input 
+                type="text" 
+                placeholder="Search by Location..." 
+                className={styles.filterInput}
+                value={tableFilter.location}
+                onChange={e => setTableFilter(prev => ({ ...prev, location: e.target.value }))}
+              />
+            </div>
           </div>
           <div className={styles.tableWrapper}>
             <table className={styles.weeklyOffersTable}>
@@ -119,11 +168,14 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                {weeklyOffers.map(offer => (
+                {filteredWeeklyOffers.map(offer => (
                   <OfferTableRow key={offer.id} offer={offer} />
                 ))}
               </tbody>
             </table>
+            {filteredWeeklyOffers.length === 0 && (
+              <p style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>No deals match your filters.</p>
+            )}
           </div>
         </section>
       )}
