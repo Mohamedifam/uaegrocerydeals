@@ -48,7 +48,8 @@ export default function WeeklyOffersPage() {
       const uData = await uploadRes.json();
       pdfUrl = uData.url;
     } else {
-        alert("Failed to upload PDF");
+        const errorData = await uploadRes.json().catch(() => ({}));
+        alert(`Failed to upload PDF: ${errorData.error || uploadRes.statusText}`);
         setUploading(false);
         return;
     }
@@ -69,6 +70,24 @@ export default function WeeklyOffersPage() {
         alert("Failed to save offer");
     }
     setUploading(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this offer?')) return;
+    
+    try {
+      const res = await fetch(`/api/admin/weekly-offers?id=${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        fetchData();
+      } else {
+        alert('Failed to delete offer');
+      }
+    } catch (e) {
+      console.error('Error deleting offer', e);
+      alert('Error deleting offer');
+    }
   };
 
   return (
@@ -117,7 +136,7 @@ export default function WeeklyOffersPage() {
               <th>Store</th>
               <th>Title</th>
               <th>Valid Dates</th>
-              <th>PDF Link</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -127,7 +146,10 @@ export default function WeeklyOffersPage() {
                 <td>{o.title || '-'}</td>
                 <td>{new Date(o.validFrom).toLocaleDateString()} - {new Date(o.validTo).toLocaleDateString()}</td>
                 <td>
-                  <a href={o.pdfUrl} target="_blank" rel="noreferrer" style={{ color: '#0ea5e9', fontWeight: 'bold' }}>View / Download</a>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <a href={o.pdfUrl} target="_blank" rel="noreferrer" style={{ color: '#0ea5e9', fontWeight: 'bold' }}>View / Download</a>
+                    <button onClick={() => handleDelete(o.id)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold' }}>Delete</button>
+                  </div>
                 </td>
               </tr>
             ))}

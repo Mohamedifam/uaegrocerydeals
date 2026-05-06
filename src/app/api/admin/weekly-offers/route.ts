@@ -31,3 +31,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create offer' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json({ error: 'Offer ID is required' }, { status: 400 });
+    }
+
+    await prisma.weeklyOffer.delete({
+      where: { id }
+    });
+    
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting offer:', error);
+    return NextResponse.json({ error: 'Failed to delete offer' }, { status: 500 });
+  }
+}
