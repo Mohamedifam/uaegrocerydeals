@@ -76,7 +76,7 @@
   font-size: 0.9rem;
 }
 
-.formInput {
+.formInput, .input {
   padding: 0.75rem 1rem;
   border: 1px solid #cbd5e1;
   border-radius: 0.5rem;
@@ -84,10 +84,19 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.formInput:focus {
+.formInput:focus, .input:focus {
   outline: none;
   border-color: #38bdf8;
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.toggleLabel {
+  font-weight: 500;
+  color: #475569;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .btnPrimary {

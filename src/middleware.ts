@@ -1,43 +1,40 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { jwtVerify } from 'jose'
 
-export function middleware(req: NextRequest) {
-  const basicAuth = req.headers.get('authorization')
+const SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key-change-this');
+
+export async function middleware(req: NextRequest) {
   const url = req.nextUrl
-  
   const rawPathname = url.pathname
   const pathname = rawPathname.toLowerCase()
   
+  // 1. Handle Admin Path Normalization
   if (pathname.startsWith('/admin')) {
-    // Force lowercase for admin paths to avoid 404s on case-sensitive hosting
     if (rawPathname !== pathname) {
       url.pathname = pathname
       return NextResponse.redirect(url)
     }
 
-    if (basicAuth) {
-      try {
-        const authValue = basicAuth.split(' ')[1]
-        const decoded = atob(authValue)
-        const colonIndex = decoded.indexOf(':')
-        if (colonIndex !== -1) {
-          const user = decoded.substring(0, colonIndex)
-          const pwd = decoded.substring(colonIndex + 1)
-          
-          if (user === 'admin' && pwd === process.env.ADMIN_PASSWORD) {
-            return NextResponse.next()
-          }
-        }
-      } catch (e) {
-        // Silently fail auth attempt
-      }
+    // 2. Allow Login Page and Login API
+    if (pathname === '/admin/login' || pathname === '/api/admin/login') {
+      return NextResponse.next()
     }
-    
-    // Auth failed
-    return new NextResponse('Authentication required to access the admin panel.', {
-      status: 401,
-      headers: { 'WWW-Authenticate': 'Basic realm="Admin"' },
-    })
+
+    // 3. Check for Session Cookie
+    const session = req.cookies.get('admin_session')?.value
+
+    if (!session) {
+      return NextResponse.redirect(new URL('/admin/login', req.url))
+    }
+
+    try {
+      await jwtVerify(session, SECRET)
+      return NextResponse.next()
+    } catch (e) {
+      // Session invalid or expired
+      return NextResponse.redirect(new URL('/admin/login', req.url))
+    }
   }
 
   return NextResponse.next()

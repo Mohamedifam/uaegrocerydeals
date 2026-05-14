@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const ads = await prisma.ad.findMany({
@@ -51,7 +53,13 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const { id } = await request.json();
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json({ error: 'Ad ID is required' }, { status: 400 });
+    }
+
     await prisma.ad.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {

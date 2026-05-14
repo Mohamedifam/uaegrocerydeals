@@ -5,6 +5,7 @@ import styles from '../admin.module.css';
 export default function WeeklyOffersPage() {
   const [offers, setOffers] = useState<any[]>([]);
   const [stores, setStores] = useState<any[]>([]);
+  const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
 
   // Form states
   const [storeId, setStoreId] = useState('');
@@ -16,8 +17,8 @@ export default function WeeklyOffersPage() {
 
   const fetchData = async () => {
     const [resOffers, resStores] = await Promise.all([
-      fetch('/api/admin/weekly-offers'),
-      fetch('/api/admin/stores')
+      fetch('/api/admin/weekly-offers', { cache: 'no-store' }),
+      fetch('/api/admin/stores', { cache: 'no-store' })
     ]);
     if (resOffers.ok) setOffers(await resOffers.json());
     if (resStores.ok) setStores(await resStores.json());
@@ -72,21 +73,45 @@ export default function WeeklyOffersPage() {
     setUploading(false);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this offer?')) return;
+  const handleBulkDelete = async () => {
+    if (!confirm(`Are you sure you want to delete ${selectedOffers.length} offers?`)) return;
     
-    try {
-      const res = await fetch(`/api/admin/weekly-offers?id=${id}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        fetchData();
-      } else {
-        alert('Failed to delete offer');
+    let successCount = 0;
+    for (const id of selectedOffers) {
+      try {
+        const res = await fetch(`/api/admin/weekly-offers?id=${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          successCount++;
+        } else {
+          const errText = await res.text();
+          alert(`Failed to delete ID ${id}. Server says: ${errText}`);
+        }
+      } catch (e: any) {
+        console.error('Failed to delete', id, e);
+        alert(`Network error deleting ID ${id}: ${e.message}`);
       }
-    } catch (e) {
-      console.error('Error deleting offer', e);
-      alert('Error deleting offer');
+    }
+    
+    if (successCount > 0) {
+       setOffers(prev => prev.filter(o => !selectedOffers.includes(o.id)));
+       setSelectedOffers([]);
+    }
+    if (successCount !== selectedOffers.length) {
+       // alert(`Deleted ${successCount} out of ${selectedOffers.length} offers.`);
+    }
+  };
+
+  const toggleSelection = (id: string) => {
+    setSelectedOffers(prev => 
+      prev.includes(id) ? prev.filter(selId => selId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleAll = () => {
+    if (selectedOffers.length === offers.length && offers.length > 0) {
+      setSelectedOffers([]);
+    } else {
+      setSelectedOffers(offers.map(o => o.id));
     }
   };
 
@@ -129,10 +154,27 @@ export default function WeeklyOffersPage() {
       </div>
 
       <div className={styles.card} style={{ marginTop: '2rem' }}>
-        <h2>Active & Past Offers</h2>
-        <table className={styles.table} style={{ marginTop: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2>Active & Past Offers</h2>
+          {selectedOffers.length > 0 && (
+            <button 
+              onClick={handleBulkDelete}
+              style={{ background: '#ef4444', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>
+              Delete Selected ({selectedOffers.length})
+            </button>
+          )}
+        </div>
+        <table className={styles.table} style={{ marginTop: '1.5rem', width: '100%' }}>
           <thead>
             <tr>
+              <th style={{ width: '40px', textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  checked={offers.length > 0 && selectedOffers.length === offers.length}
+                  onChange={toggleAll}
+                  style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+                />
+              </th>
               <th>Store</th>
               <th>Title</th>
               <th>Valid Dates</th>
@@ -142,18 +184,25 @@ export default function WeeklyOffersPage() {
           <tbody>
             {offers.map(o => (
               <tr key={o.id}>
+                <td style={{ textAlign: 'center' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={selectedOffers.includes(o.id)}
+                    onChange={() => toggleSelection(o.id)}
+                    style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+                  />
+                </td>
                 <td>{o.store?.name} <small>({o.store?.location})</small></td>
                 <td>{o.title || '-'}</td>
                 <td>{new Date(o.validFrom).toLocaleDateString()} - {new Date(o.validTo).toLocaleDateString()}</td>
                 <td>
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <a href={o.pdfUrl} target="_blank" rel="noreferrer" style={{ color: '#0ea5e9', fontWeight: 'bold' }}>View / Download</a>
-                    <button onClick={() => handleDelete(o.id)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 'bold' }}>Delete</button>
                   </div>
                 </td>
               </tr>
             ))}
-            {offers.length === 0 && <tr><td colSpan={4}>No weekly offers added yet.</td></tr>}
+            {offers.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>No weekly offers added yet.</td></tr>}
           </tbody>
         </table>
       </div>
