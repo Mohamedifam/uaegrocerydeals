@@ -51,18 +51,19 @@ export default function Home() {
   return (
     <div className="pb-20">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white py-20">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-          <div>
-            <h2 className="text-6xl font-extrabold leading-tight tracking-tight">
+      <section className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white py-12 md:py-20 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+        <div className="max-w-7xl mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-8 md:gap-10 items-center relative z-10">
+          <div className="text-center md:text-left">
+            <h2 className="text-4xl md:text-6xl font-black leading-tight tracking-tight">
               {siteSettings.heroTitle || "Save More on Every Grocery Trip"}
             </h2>
-            <p className="mt-5 text-xl text-emerald-50 max-w-lg">
+            <p className="mt-4 md:mt-5 text-lg md:text-xl text-emerald-50 max-w-lg mx-auto md:mx-0">
               {siteSettings.heroSubtitle || "Compare prices, discover weekly flyers, and find the best supermarket deals across UAE instantly."}
             </p>
-            <div className="mt-10 flex gap-4">
-              <button className="bg-white text-emerald-600 px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-emerald-50 transition-all">Explore Deals</button>
-              <button className="border-2 border-white px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition-all">Publish Ad</button>
+            <div className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <button className="bg-white text-emerald-600 px-8 py-4 rounded-2xl font-black shadow-xl hover:bg-emerald-50 transition-all active:scale-95">Explore All Deals</button>
+              <button className="bg-emerald-600/30 border-2 border-white/50 px-8 py-4 rounded-2xl font-black hover:bg-white/10 transition-all backdrop-blur-sm">View Flyers</button>
             </div>
           </div>
           <div className="hidden md:block">
@@ -72,85 +73,88 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="max-w-7xl mx-auto px-6 -mt-12 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 transform hover:-translate-y-1 transition-all">
-            <h3 className="text-4xl font-black text-emerald-600 tracking-tighter">{loading ? '...' : '50K+'}</h3>
-            <p className="text-slate-500 font-bold uppercase text-xs mt-1">Products</p>
+      <section className="max-w-7xl mx-auto px-4 md:px-6 -mt-8 md:-mt-12 relative z-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="bg-white p-5 md:p-8 rounded-[2rem] shadow-xl border border-slate-100 flex flex-col items-center md:items-start">
+            <h3 className="text-3xl md:text-4xl font-black text-emerald-600 tracking-tighter">{loading ? '...' : '50K+'}</h3>
+            <p className="text-slate-400 font-bold uppercase text-[10px] md:text-xs mt-1">Products</p>
           </div>
-          <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 transform hover:-translate-y-1 transition-all">
-            <h3 className="text-4xl font-black text-cyan-600 tracking-tighter">{loading ? '...' : (stores.length > 0 ? `${stores.length}+` : '120+')}</h3>
-            <p className="text-slate-500 font-bold uppercase text-xs mt-1">Stores</p>
+          <div className="bg-white p-5 md:p-8 rounded-[2rem] shadow-xl border border-slate-100 flex flex-col items-center md:items-start">
+            <h3 className="text-3xl md:text-4xl font-black text-cyan-600 tracking-tighter">{loading ? '...' : (stores.length > 0 ? `${stores.length}+` : '120+')}</h3>
+            <p className="text-slate-400 font-bold uppercase text-[10px] md:text-xs mt-1">Stores</p>
           </div>
-          <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 transform hover:-translate-y-1 transition-all">
-            <h3 className="text-4xl font-black text-orange-500 tracking-tighter">{loading ? '...' : (deals.length > 0 ? `${deals.length}+` : '1K+')}</h3>
-            <p className="text-slate-500 font-bold uppercase text-xs mt-1">Deals Today</p>
+          <div className="bg-white p-5 md:p-8 rounded-[2rem] shadow-xl border border-slate-100 flex flex-col items-center md:items-start">
+            <h3 className="text-3xl md:text-4xl font-black text-orange-500 tracking-tighter">{loading ? '...' : (deals.length > 0 ? `${deals.length}+` : '1K+')}</h3>
+            <p className="text-slate-400 font-bold uppercase text-[10px] md:text-xs mt-1">Deals</p>
           </div>
-          <div className="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 transform hover:-translate-y-1 transition-all">
-            <h3 className="text-4xl font-black text-pink-500 tracking-tighter">24/7</h3>
-            <p className="text-slate-500 font-bold uppercase text-xs mt-1">Updates</p>
+          <div className="bg-white p-5 md:p-8 rounded-[2rem] shadow-xl border border-slate-100 flex flex-col items-center md:items-start">
+            <h3 className="text-3xl md:text-4xl font-black text-pink-500 tracking-tighter">24/7</h3>
+            <p className="text-slate-400 font-bold uppercase text-[10px] md:text-xs mt-1">Updates</p>
           </div>
         </div>
       </section>
 
       {/* Ad Banner Area */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16">
         {activeAds.length > 0 ? (
-          <div className="overflow-hidden rounded-[3rem] shadow-2xl">
+          <div className="overflow-hidden rounded-[2rem] md:rounded-[3rem] shadow-2xl">
              <div className="flex">
                 {activeAds.map(ad => (
                   <a key={ad.id} href={ad.linkUrl || '#'} target="_blank" rel="noreferrer" className="min-w-full">
-                    <img src={ad.imageUrl} alt={ad.title || 'Advertisement'} className="w-full h-auto object-cover max-h-[400px]" />
+                    <img src={ad.imageUrl} alt={ad.title || 'Advertisement'} className="w-full h-auto object-cover max-h-[250px] md:max-h-[400px]" />
                   </a>
                 ))}
              </div>
           </div>
         ) : (
-          <div className="bg-[#2D3748] rounded-[3rem] p-16 text-center shadow-2xl border border-slate-700 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 to-transparent opacity-50"></div>
-            <p className="text-emerald-400 text-sm font-black uppercase tracking-[0.2em] relative mb-4">Advertisement Space</p>
-            <h2 className="text-5xl font-black text-white relative mb-6">📢 Publish Your Ad Here</h2>
-            <p className="text-slate-400 text-lg max-w-2xl mx-auto relative mb-10 font-medium">Your supermarket flyer or promotional banner will appear in this area reaching thousands of shoppers.</p>
-            <button className="bg-emerald-500 hover:bg-emerald-400 text-white px-10 py-4 rounded-2xl font-black text-lg shadow-xl shadow-emerald-900/20 transition-all relative">Upload Ad Banner</button>
+          <div className="bg-[#1e293b] rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 text-center shadow-2xl border border-slate-700 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent"></div>
+            <p className="text-emerald-400 text-[10px] md:text-sm font-black uppercase tracking-[0.2em] mb-4">Advertisement</p>
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">📢 Your Brand Here</h2>
+            <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto mb-10 font-medium">Reach thousands of shoppers daily with your supermarket promotions.</p>
+            <button className="bg-emerald-500 hover:bg-emerald-400 text-white px-8 md:px-10 py-3 md:py-4 rounded-2xl font-black md:text-lg shadow-xl shadow-emerald-900/20 transition-all relative">Contact Sales</button>
           </div>
         )}
       </section>
 
       {/* Weekly Hot Deals */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex justify-between items-center mb-10">
-          <h2 className="text-4xl font-black text-slate-800 flex items-center gap-3">
-            <span className="text-5xl">🔥</span> Weekly Hot Deals
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-800 flex items-center gap-3">
+            <span className="text-4xl md:text-5xl">🔥</span> Weekly Hot Deals
           </h2>
-          <button className="text-emerald-600 font-black text-sm uppercase tracking-wider hover:underline">View All</button>
+          <button className="bg-slate-100 text-slate-600 px-6 py-2 rounded-full font-black text-xs uppercase tracking-widest hover:bg-emerald-100 hover:text-emerald-700 transition-colors">View All</button>
         </div>
         
         {loading ? (
-          <div className="grid md:grid-cols-3 gap-8 animate-pulse">
-            {[1, 2, 3].map(i => <div key={i} className="bg-slate-200 h-[400px] rounded-[2.5rem]"></div>)}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 animate-pulse">
+            {[1, 2, 3].map(i => <div key={i} className="bg-slate-200 h-[350px] md:h-[400px] rounded-[2rem] md:rounded-[2.5rem]"></div>)}
           </div>
         ) : bestOffers.length > 0 ? (
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {bestOffers.map(deal => (
-              <div key={deal.id} className="bg-white rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-slate-100 group">
-                <div className="relative h-64 w-full overflow-hidden">
+              <div key={deal.id} className="bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden border border-slate-100 group">
+                <div className="relative h-56 md:h-64 w-full overflow-hidden">
                   <img 
                     src={deal.product?.imageUrl || 'https://images.unsplash.com/photo-1586201375761-83865001e31c'} 
                     className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700" 
                     alt={deal.product?.name}
                   />
-                  <div className="absolute top-6 left-6">
-                    <span className="bg-rose-50 text-rose-600 px-4 py-2 rounded-2xl text-sm font-black shadow-sm">
+                  <div className="absolute top-4 left-4 md:top-6 md:left-6">
+                    <span className="bg-rose-500 text-white px-4 py-2 rounded-xl text-sm font-black shadow-lg">
                       {deal.price} AED
                     </span>
                   </div>
                 </div>
-                <div className="p-8">
-                  <span className="bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">
-                    {deal.store?.name}
-                  </span>
-                  <h3 className="mt-5 font-black text-2xl text-slate-800 leading-tight">{deal.product?.name}</h3>
-                  <p className="text-slate-400 font-bold text-sm mt-3 flex items-center gap-2">
+                <div className="p-6 md:p-8">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                      {deal.store?.name}
+                    </span>
+                    {deal.isBestDeal && <span className="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">Best Price</span>}
+                  </div>
+                  <h3 className="mt-4 font-black text-xl md:text-2xl text-slate-800 leading-tight h-14 line-clamp-2">{deal.product?.name}</h3>
+                  <p className="text-slate-400 font-bold text-xs md:text-sm mt-3 flex items-center gap-2">
                     <span className="text-lg">📍</span> {deal.store?.location}
                   </p>
                 </div>
@@ -158,22 +162,70 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-24 bg-white rounded-[3rem] border-4 border-dashed border-slate-100">
-            <p className="text-slate-300 font-bold text-xl">No hot deals active right now.</p>
+          <div className="text-center py-20 bg-white rounded-[2rem] md:rounded-[3rem] border-4 border-dashed border-slate-100">
+            <p className="text-slate-300 font-bold text-lg md:text-xl">No hot deals active right now.</p>
           </div>
         )}
       </section>
 
-      {/* Weekly Offers Table */}
-      <section className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
-          <h2 className="text-4xl font-black text-slate-800 flex items-center gap-3">
-            <span className="text-5xl">📋</span> Weekly Offers Table
-          </h2>
-          <button className="text-emerald-600 font-black text-sm uppercase tracking-wider hover:underline">View All Offers</button>
+      {/* Weekly Offers Table / Mobile Cards */}
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-black text-slate-800 flex items-center gap-3">
+              <span className="text-4xl md:text-5xl">📋</span> Supermarket Flyers
+            </h2>
+            <p className="text-slate-500 font-medium mt-1">Browse the latest weekly promotional catalogs</p>
+          </div>
+          
+          <div className="flex gap-2 w-full md:w-auto">
+            <select 
+              className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 flex-1"
+              onChange={(e) => setTableFilter(f => ({ ...f, store: e.target.value }))}
+            >
+              <option value="">All Stores</option>
+              {stores.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+          </div>
         </div>
         
-        <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
+        {/* Mobile View: Cards */}
+        <div className="md:hidden grid gap-4">
+          {loading ? (
+            [1, 2, 3].map(i => <div key={i} className="bg-slate-200 h-32 rounded-2xl animate-pulse"></div>)
+          ) : filteredWeeklyOffers.length > 0 ? (
+            filteredWeeklyOffers.map(offer => (
+              <div key={offer.id} className="bg-white p-5 rounded-[1.5rem] shadow-md border border-slate-100">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-black text-emerald-600 text-lg leading-tight">{offer.store?.name}</h3>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-1">📍 {offer.store?.location}</p>
+                  </div>
+                  <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase">Flyer</div>
+                </div>
+                <div className="mt-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-slate-600 font-bold text-sm">{offer.title || 'Weekly Deals'}</p>
+                    <p className="text-[10px] text-slate-400 font-bold mt-1">Valid: {new Date(offer.validFrom).toLocaleDateString('en-GB')} - {new Date(offer.validTo).toLocaleDateString('en-GB')}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <a href={offer.pdfUrl} target="_blank" className="bg-emerald-500 text-white p-3 rounded-xl shadow-lg shadow-emerald-100 active:scale-95">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-10 bg-white rounded-2xl border-2 border-dashed border-slate-100 text-slate-300 font-bold">No flyers found</div>
+          )}
+        </div>
+
+        {/* Desktop View: Table */}
+        <div className="hidden md:block bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead className="bg-emerald-600 text-white">
