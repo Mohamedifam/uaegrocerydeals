@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import styles from '../admin.module.css';
+import { upload } from '@vercel/blob/client';
 
 export default function WeeklyOffersPage() {
   const [offers, setOffers] = useState<any[]>([]);
@@ -38,21 +39,39 @@ export default function WeeklyOffersPage() {
     setUploading(true);
     let pdfUrl = '';
 
-    const formData = new FormData();
-    formData.append('file', file);
-    const uploadRes = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    });
-    
-    if (uploadRes.ok) {
-      const uData = await uploadRes.json();
-      pdfUrl = uData.url;
-    } else {
-        const errorData = await uploadRes.json().catch(() => ({}));
-        alert(`Failed to upload PDF: ${errorData.error || uploadRes.statusText}`);
+    try {
+      // Direct browser-to-blob upload (bypasses 4.5MB limit)
+      const newBlob = await upload(file.name, file, {
+        access: 'public',
+        handleUploadUrl: '/api/admin/upload/blob-token',
+      });
+      pdfUrl = newBlob.url;
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      
+      // Fallback for local development if BLOB token is missing
+      if (error.message?.includes('BLOB_READ_WRITE_TOKEN')) {
+        console.log('Falling back to local server upload...');
+        const formData = new FormData();
+        formData.append('file', file);
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (uploadRes.ok) {
+          const uData = await uploadRes.json();
+          pdfUrl = uData.url;
+        } else {
+          alert("Upload failed. For large files, ensure Vercel Blob is connected.");
+          setUploading(false);
+          return;
+        }
+      } else {
+        alert(`Failed to upload: ${error.message}`);
         setUploading(false);
         return;
+      }
     }
 
     const res = await fetch('/api/admin/weekly-offers', {
