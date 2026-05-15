@@ -8,27 +8,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className={styles.sidebar}>
         <div className={styles.sidebarBrand}>Deals Admin</div>
         <nav>
-          <Link href="/admin" className={styles.navLink}>
+          <Link href="/stanger-user-dashboard" className={styles.navLink}>
             <LayoutDashboard size={20} />
             Dashboard
           </Link>
-          <Link href="/admin/stores" className={styles.navLink}>
+          <Link href="/stanger-user-dashboard/stores" className={styles.navLink}>
             <Store size={20} />
             Stores
           </Link>
-          <Link href="/admin/products" className={styles.navLink}>
+          <Link href="/stanger-user-dashboard/products" className={styles.navLink}>
             <ShoppingCart size={20} />
             Products
           </Link>
-          <Link href="/admin/prices" className={styles.navLink}>
+          <Link href="/stanger-user-dashboard/prices" className={styles.navLink}>
             <Tag size={20} />
             Prices & Deals
           </Link>
-          <Link href="/admin/weekly-offers" className={styles.navLink}>
+          <Link href="/stanger-user-dashboard/weekly-offers" className={styles.navLink}>
             <FileText size={20} />
             Weekly Offers
           </Link>
-          <Link href="/admin/settings" className={styles.navLink}>
+          <Link href="/stanger-user-dashboard/settings" className={styles.navLink}>
             <Settings size={20} />
             Settings & Ads
           </Link>

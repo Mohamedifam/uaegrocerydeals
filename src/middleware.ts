@@ -10,14 +10,14 @@ export async function middleware(req: NextRequest) {
   const pathname = rawPathname.toLowerCase()
   
   // 1. Handle Admin Path Normalization
-  if (pathname.startsWith('/admin')) {
+  if (pathname.startsWith('/stanger-user-dashboard')) {
     if (rawPathname !== pathname) {
       url.pathname = pathname
       return NextResponse.redirect(url)
     }
 
     // 2. Allow Login Page and Login API
-    if (pathname === '/admin/login' || pathname === '/api/admin/login') {
+    if (pathname === '/stanger-user-dashboard/login' || pathname === '/api/admin/login') {
       return NextResponse.next()
     }
 
@@ -25,7 +25,7 @@ export async function middleware(req: NextRequest) {
     const session = req.cookies.get('admin_session')?.value
 
     if (!session) {
-      return NextResponse.redirect(new URL('/admin/login', req.url))
+      return NextResponse.redirect(new URL('/stanger-user-dashboard/login', req.url))
     }
 
     try {
@@ -33,7 +33,7 @@ export async function middleware(req: NextRequest) {
       return NextResponse.next()
     } catch (e) {
       // Session invalid or expired
-      return NextResponse.redirect(new URL('/admin/login', req.url))
+      return NextResponse.redirect(new URL('/stanger-user-dashboard/login', req.url))
     }
   }
 
@@ -41,5 +41,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*', '/Admin', '/Admin/:path*'],
+  matcher: ['/stanger-user-dashboard', '/stanger-user-dashboard/:path*'],
 }

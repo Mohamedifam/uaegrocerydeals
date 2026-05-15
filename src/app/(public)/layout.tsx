@@ -21,7 +21,6 @@ export default function PublicLayout({
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500" 
               />
             </div>
-            <button className="bg-emerald-600 text-white px-5 py-2 rounded-xl font-medium hover:bg-emerald-700 transition-colors">Login</button>
           </div>
           <nav className="border-t bg-white">
             <div className="max-w-7xl mx-auto px-6 py-3 flex gap-6 text-sm font-medium overflow-x-auto whitespace-nowrap">
@@ -31,7 +30,6 @@ export default function PublicLayout({
               <a href="#" className="hover:text-emerald-600">Beverages</a>
               <a href="#" className="hover:text-emerald-600">Baby Products</a>
               <a href="#" className="hover:text-emerald-600">Offers</a>
-              <a href="/admin" className="ml-auto text-slate-500 hover:text-emerald-600 font-bold border-l pl-6">Admin Access</a>
             </div>
           </nav>
         </header>
